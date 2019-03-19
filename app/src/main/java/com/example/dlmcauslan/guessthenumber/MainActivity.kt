@@ -21,8 +21,6 @@ class MainActivity : AppCompatActivity() {
         })
 
         bt_guess.setOnClickListener(buttonClickListener)
-
-        viewModel.startNewGame()
     }
 
     private fun updateUi(state: MainViewState) {

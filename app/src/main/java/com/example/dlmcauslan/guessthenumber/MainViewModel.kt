@@ -18,7 +18,7 @@ class MainViewModel: ViewModel() {
     /**
      * Start a new game
      */
-    fun startNewGame() {
+    private fun startNewGame() {
         viewState.value = MainViewState(
                 guess = 0,
                 answer = Random.nextInt(1,11),
@@ -78,4 +78,7 @@ class MainViewModel: ViewModel() {
         }
     }
 
+    init {
+        startNewGame()
+    }
 }
