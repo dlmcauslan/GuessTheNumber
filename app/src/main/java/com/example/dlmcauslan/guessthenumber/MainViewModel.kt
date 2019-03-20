@@ -8,11 +8,11 @@ import kotlin.random.Random
 class MainViewModel: ViewModel() {
 
     /**
-     * Sealed class representing the different events that can be fired off by the ui
+     * Sealed class representing the different view effects that can be fired off by the ui
      */
-    sealed class Events {
-        object InvalidGuess: Events()
-        data class HigherOrLower(val isHigher: Boolean): Events()
+    sealed class ViewEffects {
+        object InvalidGuess: ViewEffects()
+        data class HigherOrLower(val isHigher: Boolean): ViewEffects()
     }
 
     /**
@@ -34,10 +34,10 @@ class MainViewModel: ViewModel() {
     private val viewState = MutableLiveData<MainViewState>()
 
     /**
-     * Live data used to fire off one-time events
+     * Live data used to fire off one-time view effects
      */
-    fun getEvents(): LiveData<Events> = events
-    private val events = MutableLiveData<Events>()
+    fun getViewEffects(): LiveData<ViewEffects> = viewEffects
+    private val viewEffects = MutableLiveData<ViewEffects>()
 
     /**
      * Update the view state when the 'Guess' button is clicked
