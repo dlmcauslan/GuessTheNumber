@@ -24,20 +24,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateUi(state: MainViewState) {
-        when {
-            state.isGuessCorrect -> {
-                tv_remaining_guesses.text = getString(R.string.you_guessed_correctly)
-                bt_guess.text = getString(R.string.play_again)
-            }
-            state.isGameOver -> {
-                tv_remaining_guesses.text = getString(R.string.you_lose)
-                bt_guess.text = getString(R.string.play_again)
-            }
-            else -> {
-                tv_remaining_guesses.text = getString(R.string.you_have_X_guesses_remaining, state.guessesRemaining)
-                bt_guess.text = getString(R.string.guess)
-            }
-        }
+        tv_remaining_guesses.text = state.remainingGuessesText
+        bt_guess.text = state.buttonText
     }
 
     private val buttonClickListener = { _: View ->
