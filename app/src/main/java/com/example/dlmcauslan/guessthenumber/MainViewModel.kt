@@ -93,7 +93,10 @@ class MainViewModel: ViewModel() {
                     isGameOver = guessesRemaining == 0 || isGuessCorrect,
                     isGuessCorrect = isGuessCorrect
             )
-            // TODO() fire off event to indicate whether it is higher or lower
+
+            if (!gameState.isGameOver) {
+                viewEffects.value = ViewEffects.HigherOrLower(isHigher = guessAsInt < gameState.answer)
+            }
         }
     }
 

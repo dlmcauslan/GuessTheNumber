@@ -52,10 +52,13 @@ class MainActivity : AppCompatActivity() {
     private fun processViewEffects(viewEffect: MainViewModel.ViewEffects) {
         when (viewEffect) {
             is MainViewModel.ViewEffects.InvalidGuess -> {
-                Snackbar.make(main_layout, "Guess must be between 1 and 10",  Snackbar.LENGTH_LONG).show()
+                Snackbar.make(main_layout, "Guess must be between 1 and 10",  Snackbar.LENGTH_SHORT).show()
             }
             is MainViewModel.ViewEffects.HigherOrLower -> {
-
+                val snackbarText =
+                        if (viewEffect.isHigher) "Try a higher guess"
+                        else "Try a lower guess"
+                Snackbar.make(main_layout, snackbarText, Snackbar.LENGTH_SHORT).show()
             }
         }
     }
