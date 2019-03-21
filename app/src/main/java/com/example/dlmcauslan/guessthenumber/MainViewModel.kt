@@ -83,7 +83,7 @@ class MainViewModel: ViewModel() {
         val guessAsInt = guess.toInt()
 
         if (guessAsInt < 1 || guessAsInt > 10) {
-            // TODO() fire off invalid guess event
+            viewEffects.value = ViewEffects.InvalidGuess
         } else {
             val isGuessCorrect = guessAsInt == gameState.answer
             val guessesRemaining = gameState.guessesRemaining - 1
@@ -95,6 +95,10 @@ class MainViewModel: ViewModel() {
             )
             // TODO() fire off event to indicate whether it is higher or lower
         }
+    }
+
+    fun clearViewEffects() {
+        viewEffects.value = null
     }
 
     init {
