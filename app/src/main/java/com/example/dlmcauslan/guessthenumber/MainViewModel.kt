@@ -26,7 +26,7 @@ class MainViewModel: ViewModel() {
         val remainingGuessesText =
                 when {
                     gameState.isGuessCorrect -> "You guessed correctly, Congratulations!"
-                    gameState.isGameOver -> "Sorry, you have run out of guesses. Try again?"
+                    gameState.isGameOver -> "Sorry, you have run out of guesses.\nTry again?"
                     else -> "You have ${gameState.guessesRemaining} guesses remaining"
                 }
 
