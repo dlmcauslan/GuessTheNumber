@@ -23,8 +23,8 @@
             android:textSize="18sp"
             android:padding="8dp"
             app:layout_constraintBottom_toTopOf="@+id/tv_remaining_guesses"
-            app:layout_constraintEnd_toEndOf="@+id/tv_remaining_guesses"
-            app:layout_constraintStart_toStartOf="@+id/tv_remaining_guesses"
+            app:layout_constraintRight_toRightOf="@+id/tv_remaining_guesses"
+            app:layout_constraintLeft_toLeftOf="@+id/tv_remaining_guesses"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
@@ -36,24 +36,45 @@
             android:textSize="18sp"
             android:padding="8dp"
             android:gravity="center"
-            app:layout_constraintBottom_toTopOf="@+id/et_guess_value"
-            app:layout_constraintEnd_toEndOf="@+id/et_guess_value"
-            app:layout_constraintStart_toStartOf="@+id/et_guess_value"
-            app:layout_constraintTop_toBottomOf="@+id/textView" />
+            app:layout_constraintTop_toBottomOf="@+id/textView"
+            app:layout_constraintBottom_toTopOf="@id/tv_guess"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"/>
 
-        <EditText
-            android:id="@+id/et_guess_value"
-            android:layout_width="wrap_content"
+        <ImageView
+            android:id="@+id/iv_decrease_guess"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            android:layout_marginBottom="50dp"
-            android:ems="10"
-            android:inputType="number"
-            android:textSize="24sp"
-            app:layout_constraintBottom_toTopOf="@+id/bt_guess"
-            app:layout_constraintEnd_toEndOf="@+id/bt_guess"
-            app:layout_constraintStart_toStartOf="@+id/bt_guess"
-            app:layout_constraintTop_toBottomOf="@+id/tv_remaining_guesses" />
+            android:padding="0dp"
+            app:srcCompat="@drawable/ic_remove_black"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/tv_guess"
+            app:layout_constraintTop_toTopOf="@id/tv_guess"
+            app:layout_constraintBottom_toBottomOf="@id/tv_guess"/>
+
+        <TextView
+            android:id="@+id/tv_guess"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:text="50"
+            android:textSize="56sp"
+            android:padding="8dp"
+            android:gravity="center"
+            app:layout_constraintLeft_toRightOf="@id/iv_decrease_guess"
+            app:layout_constraintRight_toLeftOf="@id/iv_increase_guess"
+            app:layout_constraintTop_toBottomOf="@+id/tv_remaining_guesses"
+            app:layout_constraintBottom_toTopOf="@id/bt_guess"/>
+
+        <ImageView
+            android:id="@+id/iv_increase_guess"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_add_black"
+            app:layout_constraintLeft_toRightOf="@id/tv_guess"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_guess"
+            app:layout_constraintBottom_toBottomOf="@id/tv_guess"/>
 
         <Button
             android:id="@+id/bt_guess"
@@ -65,10 +86,9 @@
             android:textSize="24sp"
             android:padding="24dp"
             android:layout_marginBottom="50dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/et_guess_value"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_guess"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

@@ -5,5 +5,5 @@
     <string name="you_have_X_guesses_remaining">You have %1d guesses remaining</string>
     <string name="you_guessed_correctly">You guessed correctly, Congratulations!</string>
     <string name="play_again">Play again?</string>
-    <string name="you_lose">Sorry, you have run out of guesses. You lose :(</string>
+    <string name="you_lose">Sorry, you have run out of guesses.\nTry again?</string>
 </resources>

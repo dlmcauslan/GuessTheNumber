@@ -3,16 +3,10 @@ package com.example.dlmcauslan.guessthenumber
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import kotlin.random.Random
 
 class MainViewModel: ViewModel() {
 
-    private var gameState = GameState(
-            currentGuess = 0,
-            answer = Random.nextInt(1,11),
-            guessesRemaining = 3,
-            isGameOver = false,
-            isGuessCorrect = false)
+    private var gameState = GameState()
         set(value) {
             field = value
             setViewState(field)
@@ -31,16 +25,15 @@ class MainViewModel: ViewModel() {
                 }
 
         viewState.value = MainViewState(
+                currentGuess = "${gameState.currentGuess}",
                 remainingGuessesText = remainingGuessesText,
                 buttonText = buttonText
         )
-
     }
 
     /**
      * Sealed class representing the different view effects that can be fired off by the ui
      */
-    // TODO() check these arent recreated on rotation
     sealed class ViewEffects {
         object InvalidGuess: ViewEffects()
         data class HigherOrLower(val isHigher: Boolean): ViewEffects()
@@ -50,12 +43,7 @@ class MainViewModel: ViewModel() {
      * Start a new game
      */
     private fun startNewGame() {
-        gameState = GameState(
-                currentGuess = 0,
-                answer = Random.nextInt(1,11),
-                guessesRemaining = 3,
-                isGameOver = false,
-                isGuessCorrect = false)
+        gameState = GameState()
     }
 
     /**
@@ -73,30 +61,41 @@ class MainViewModel: ViewModel() {
     /**
      * Update the view state when the 'Guess' button is clicked
      */
-    fun guessButtonClicked(guess: String) {
+    fun guessButtonClicked() {
         if (gameState.isGameOver) {
             startNewGame()
-            // TODO() potentially fire off event to clear text field
             return
         }
 
-        val guessAsInt = guess.toInt()
+        val isGuessCorrect = gameState.currentGuess == gameState.answer
+        val guessesRemaining = gameState.guessesRemaining - 1
 
-        if (guessAsInt < 1 || guessAsInt > 10) {
+        // Update the game state
+        gameState = gameState.copy(
+                guessesRemaining = guessesRemaining,
+                isGameOver = guessesRemaining == 0 || isGuessCorrect,
+                isGuessCorrect = isGuessCorrect
+        )
+
+        // Fire off a view effect to let the user know to guess higher or lower
+        if (!gameState.isGameOver) {
+            viewEffects.value = ViewEffects.HigherOrLower(isHigher = gameState.currentGuess < gameState.answer)
+        }
+    }
+
+    fun decreaseButtonClicked() {
+        if (gameState.currentGuess == 1) {
             viewEffects.value = ViewEffects.InvalidGuess
         } else {
-            val isGuessCorrect = guessAsInt == gameState.answer
-            val guessesRemaining = gameState.guessesRemaining - 1
-            gameState = gameState.copy(
-                    currentGuess = guessAsInt,
-                    guessesRemaining = guessesRemaining,
-                    isGameOver = guessesRemaining == 0 || isGuessCorrect,
-                    isGuessCorrect = isGuessCorrect
-            )
+            gameState = gameState.decrease()
+        }
+    }
 
-            if (!gameState.isGameOver) {
-                viewEffects.value = ViewEffects.HigherOrLower(isHigher = guessAsInt < gameState.answer)
-            }
+    fun increaseButtonClicked() {
+        if (gameState.currentGuess == 10) {
+            viewEffects.value = ViewEffects.InvalidGuess
+        } else {
+            gameState = gameState.increase()
         }
     }
 

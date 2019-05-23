@@ -1,13 +1,10 @@
 package com.example.dlmcauslan.guessthenumber
 
-import android.content.Context
 import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import kotlinx.android.synthetic.main.activity_main.*
-import android.view.inputmethod.InputMethodManager
 import com.google.android.material.snackbar.Snackbar
 
 
@@ -34,7 +31,17 @@ class MainActivity : AppCompatActivity() {
             viewModel.clearViewEffects()
         })
 
-        bt_guess.setOnClickListener(buttonClickListener)
+        bt_guess.setOnClickListener{
+            viewModel.guessButtonClicked()
+        }
+
+        iv_decrease_guess.setOnClickListener {
+            viewModel.decreaseButtonClicked()
+        }
+
+        iv_increase_guess.setOnClickListener {
+            viewModel.increaseButtonClicked()
+        }
 
     }
 
@@ -42,11 +49,7 @@ class MainActivity : AppCompatActivity() {
         // Update UI
         tv_remaining_guesses.text = state.remainingGuessesText
         bt_guess.text = state.buttonText
-
-        // Select text and show keyboard
-        et_guess_value.selectAll()
-        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.showSoftInput(et_guess_value, InputMethodManager.SHOW_IMPLICIT)
+        tv_guess.text = state.currentGuess
     }
 
     private fun processViewEffects(viewEffect: MainViewModel.ViewEffects) {
@@ -61,10 +64,5 @@ class MainActivity : AppCompatActivity() {
                 Snackbar.make(main_layout, snackbarText, Snackbar.LENGTH_SHORT).show()
             }
         }
-    }
-
-    private val buttonClickListener = { _: View ->
-        val guess = et_guess_value.text.toString()
-        viewModel.guessButtonClicked(guess)
     }
 }
