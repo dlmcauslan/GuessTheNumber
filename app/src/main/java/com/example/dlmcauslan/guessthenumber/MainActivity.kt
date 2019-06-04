@@ -1,5 +1,6 @@
 package com.example.dlmcauslan.guessthenumber
 
+import android.content.Context
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -10,15 +11,18 @@ import com.google.android.material.snackbar.Snackbar
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var viewModel: MainViewModel
+    private lateinit var viewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
+        val repository = MainViewRepository(getPreferences(Context.MODE_PRIVATE))
+        val factory = ViewModelFactory(repository)
+
+        viewModel = ViewModelProviders.of(this, factory).get(MainViewModel::class.java)
         viewModel.getViewState().observe(this, Observer<MainViewState> { state ->
-            updateUi(state)
+            state?.let { updateUi(state) }
         })
 
         viewModel.getViewEffects().observe(this, Observer<MainViewModel.ViewEffects> { viewEffect ->
@@ -50,6 +54,8 @@ class MainActivity : AppCompatActivity() {
         tv_remaining_guesses.text = state.remainingGuessesText
         bt_guess.text = state.buttonText
         tv_guess.text = state.currentGuess
+        // I'd normally use string resources here, but I've left them as raw strings here for clarity.
+        tv_wins_and_loses.text = "Wins - ${state.numberOfWins} \t\t\t Losses - ${state.numberOfLosses}"
     }
 
     private fun processViewEffects(viewEffect: MainViewModel.ViewEffects) {

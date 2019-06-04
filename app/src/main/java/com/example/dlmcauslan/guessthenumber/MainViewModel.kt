@@ -1,10 +1,23 @@
 package com.example.dlmcauslan.guessthenumber
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class MainViewModel: ViewModel() {
+class MainViewModel(private val repository: MainViewRepository): ViewModel() {
+
+    /**
+     * Live data to hold the view state
+     */
+    fun getViewState(): LiveData<MainViewState> = viewState
+    private val viewState = MediatorLiveData<MainViewState>()
+
+    /**
+     * Live data used to fire off one-time view effects
+     */
+    fun getViewEffects(): LiveData<ViewEffects> = viewEffects
+    private val viewEffects = MutableLiveData<ViewEffects>()
 
     private var gameState = GameState()
         set(value) {
@@ -12,7 +25,7 @@ class MainViewModel: ViewModel() {
             setViewState(field)
         }
 
-    private fun setViewState(gameState: GameState) {
+    private fun setViewState(gameState: GameState) = updateViewState { state ->
         // I'd normally use string resources here, but I've left them as raw strings here for clarity.
         val buttonText =
                 if (gameState.isGameOver) "Play again?"
@@ -24,7 +37,7 @@ class MainViewModel: ViewModel() {
                     else -> "You have ${gameState.guessesRemaining} guesses remaining"
                 }
 
-        viewState.value = MainViewState(
+        state.copy(
                 currentGuess = "${gameState.currentGuess}",
                 remainingGuessesText = remainingGuessesText,
                 buttonText = buttonText
@@ -40,25 +53,6 @@ class MainViewModel: ViewModel() {
     }
 
     /**
-     * Start a new game
-     */
-    private fun startNewGame() {
-        gameState = GameState()
-    }
-
-    /**
-     * Live data to hold the view state
-     */
-    fun getViewState(): LiveData<MainViewState> = viewState
-    private val viewState = MutableLiveData<MainViewState>()
-
-    /**
-     * Live data used to fire off one-time view effects
-     */
-    fun getViewEffects(): LiveData<ViewEffects> = viewEffects
-    private val viewEffects = MutableLiveData<ViewEffects>()
-
-    /**
      * Update the view state when the 'Guess' button is clicked
      */
     fun guessButtonClicked() {
@@ -67,20 +61,20 @@ class MainViewModel: ViewModel() {
             return
         }
 
-        val isGuessCorrect = gameState.currentGuess == gameState.answer
-        val guessesRemaining = gameState.guessesRemaining - 1
+        gameState = gameState.haveAGuess()
 
-        // Update the game state
-        gameState = gameState.copy(
-                guessesRemaining = guessesRemaining,
-                isGameOver = guessesRemaining == 0 || isGuessCorrect,
-                isGuessCorrect = isGuessCorrect
-        )
-
-        // Fire off a view effect to let the user know to guess higher or lower
         if (!gameState.isGameOver) {
+            // Fire off a view effect to let the user know to guess higher or lower
             viewEffects.value = ViewEffects.HigherOrLower(isHigher = gameState.currentGuess < gameState.answer)
+        } else {
+            // Game is over so update the win/loss count in the "database"
+            if (gameState.isGuessCorrect) repository.saveWin()
+            else repository.saveLoss()
         }
+    }
+
+    private fun startNewGame() {
+        gameState = GameState()
     }
 
     fun decreaseButtonClicked() {
@@ -104,6 +98,30 @@ class MainViewModel: ViewModel() {
     }
 
     init {
+        viewState.addSource(repository.getNumberOfWins()) { numberOfWins ->
+            updateNumberOfWins(numberOfWins)
+        }
+
+        viewState.addSource(repository.getNumberOfLosses()) { numberOfLosses ->
+            updateNumberOfLosses(numberOfLosses)
+        }
+
+        viewState.value = MainViewState()
+
         setViewState(gameState)
+    }
+
+    private fun updateNumberOfWins(numberOfWins: Int) = updateViewState { state ->
+        state.copy(numberOfWins = numberOfWins)
+    }
+
+    private fun updateNumberOfLosses(numberOfLosses: Int) = updateViewState { state ->
+        state.copy(numberOfLosses = numberOfLosses)
+    }
+
+    private fun updateViewState(updateFunction: (state: MainViewState) -> MainViewState) {
+        viewState.value = viewState.value?.let { state ->
+            updateFunction(state)
+        }
     }
 }

@@ -12,5 +12,17 @@ data class GameState(
     fun increase() = copy(currentGuess = currentGuess + 1)
 
     fun decrease() = copy(currentGuess = currentGuess - 1)
+
+    fun haveAGuess(): GameState {
+        val isGuessCorrect = currentGuess == answer
+        val guessesRemaining = guessesRemaining - 1
+
+        // Return the new game state
+        return copy(
+                guessesRemaining = guessesRemaining,
+                isGameOver = guessesRemaining == 0 || isGuessCorrect,
+                isGuessCorrect = isGuessCorrect
+        )
+    }
 }
 

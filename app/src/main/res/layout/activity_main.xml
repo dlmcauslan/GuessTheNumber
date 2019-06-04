@@ -15,17 +15,30 @@
         android:id="@+id/main_layout">
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/tv_wins_and_loses"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
-            android:text="@string/guess_a_number_between_0_and_10"
+            android:layout_marginTop="5dp"
+            tools:text="Win - 5         Loss - 3"
             android:textSize="18sp"
+            android:padding="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/tv_introduction"
+            app:layout_constraintRight_toRightOf="@+id/tv_introduction"
+            app:layout_constraintLeft_toLeftOf="@+id/tv_introduction"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_introduction"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:text="@string/guess_a_number_between_0_and_10"
+            android:textSize="22sp"
             android:padding="8dp"
             app:layout_constraintBottom_toTopOf="@+id/tv_remaining_guesses"
             app:layout_constraintRight_toRightOf="@+id/tv_remaining_guesses"
             app:layout_constraintLeft_toLeftOf="@+id/tv_remaining_guesses"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/tv_wins_and_loses" />
 
         <TextView
             android:id="@+id/tv_remaining_guesses"
@@ -36,7 +49,7 @@
             android:textSize="18sp"
             android:padding="8dp"
             android:gravity="center"
-            app:layout_constraintTop_toBottomOf="@+id/textView"
+            app:layout_constraintTop_toBottomOf="@+id/tv_introduction"
             app:layout_constraintBottom_toTopOf="@id/tv_guess"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"/>
@@ -57,7 +70,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="25dp"
-            android:text="50"
+            tools:text="50"
             android:textSize="56sp"
             android:padding="8dp"
             android:gravity="center"
