@@ -1,11 +1,12 @@
 package com.example.dlmcauslan.guessthenumber
 
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class MainViewModel(private val repository: MainViewRepository): ViewModel() {
+class MainViewModel(private val repository: IMainViewRepository): ViewModel() {
 
     /**
      * Live data to hold the view state
@@ -123,5 +124,10 @@ class MainViewModel(private val repository: MainViewRepository): ViewModel() {
         viewState.value = viewState.value?.let { state ->
             updateFunction(state)
         }
+    }
+
+    @VisibleForTesting
+    fun setGameStateForTests(newGameState: GameState) {
+        gameState = newGameState
     }
 }
