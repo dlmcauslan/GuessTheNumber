@@ -14,12 +14,6 @@ class MainViewModel(private val repository: IMainViewRepository): ViewModel() {
     fun getViewState(): LiveData<MainViewState> = viewState
     private val viewState = MediatorLiveData<MainViewState>()
 
-    /**
-     * Live data used to fire off one-time view effects
-     */
-    fun getViewEffects(): LiveData<ViewEffects> = viewEffects
-    private val viewEffects = MutableLiveData<ViewEffects>()
-
     private var gameState = GameState()
         set(value) {
             field = value
@@ -45,6 +39,12 @@ class MainViewModel(private val repository: IMainViewRepository): ViewModel() {
         )
     }
 
+    private fun updateViewState(updateFunction: (state: MainViewState) -> MainViewState) {
+        viewState.value = viewState.value?.let { state ->
+            updateFunction(state)
+        }
+    }
+
     /**
      * Sealed class representing the different view effects that can be fired off by the ui
      */
@@ -52,6 +52,12 @@ class MainViewModel(private val repository: IMainViewRepository): ViewModel() {
         object InvalidGuess: ViewEffects()
         data class HigherOrLower(val isHigher: Boolean): ViewEffects()
     }
+
+    /**
+     * Live data used to fire off one-time view effects
+     */
+    fun getViewEffects(): LiveData<ViewEffects> = viewEffects
+    private val viewEffects = MutableLiveData<ViewEffects>()
 
     /**
      * Update the view state when the 'Guess' button is clicked
@@ -118,12 +124,6 @@ class MainViewModel(private val repository: IMainViewRepository): ViewModel() {
 
     private fun updateNumberOfLosses(numberOfLosses: Int) = updateViewState { state ->
         state.copy(numberOfLosses = numberOfLosses)
-    }
-
-    private fun updateViewState(updateFunction: (state: MainViewState) -> MainViewState) {
-        viewState.value = viewState.value?.let { state ->
-            updateFunction(state)
-        }
     }
 
     @VisibleForTesting
