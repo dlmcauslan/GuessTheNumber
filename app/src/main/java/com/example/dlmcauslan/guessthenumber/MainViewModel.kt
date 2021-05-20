@@ -50,7 +50,8 @@ class MainViewModel(private val repository: IMainViewRepository): ViewModel() {
      */
     sealed class ViewEffects {
         object InvalidGuess: ViewEffects()
-        data class HigherOrLower(val isHigher: Boolean): ViewEffects()
+        object GuessHigher: ViewEffects()
+        object GuessLower: ViewEffects()
     }
 
     /**
@@ -72,7 +73,11 @@ class MainViewModel(private val repository: IMainViewRepository): ViewModel() {
 
         if (!gameState.isGameOver) {
             // Fire off a view effect to let the user know to guess higher or lower
-            viewEffects.value = ViewEffects.HigherOrLower(isHigher = gameState.currentGuess < gameState.answer)
+            viewEffects.value = if (gameState.currentGuess < gameState.answer) {
+                ViewEffects.GuessHigher
+            } else {
+                ViewEffects.GuessLower
+            }
         } else {
             // Game is over so update the win/loss count in the "database"
             if (gameState.isGuessCorrect) repository.saveWin()
